@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from typing import Optional
 from app import setting 
 from contextlib import asynccontextmanager
-from sqlmodel import SQLModel, Field, create_engine, Session
+from sqlmodel import SQLModel, Field, create_engine, Session, select
 
 
 
@@ -38,5 +38,13 @@ def creat_task(todo_data : Todo):
         session.commit()
         session.refresh(todo_data)
         return todo_data
+
+
+@app.get("/mytask")
+def get_all_todo():
+    with Session(engine) as session:
+        query = select(Todo)
+        all_todos = session.exec(query).all()
+        return all_todos
     
 
